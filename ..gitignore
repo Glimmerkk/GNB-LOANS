@@ -1,0 +1,121 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+yarn-error.log
+
+# Environment files - NEVER COMMIT THESE!
+.env
+.env.local
+.env.production
+.env.development
+.env.staging
+
+# Backend specific
+backend/node_modules/
+backend/package-lock.json
+backend/.env
+backend/logs/
+backend/*.log
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+# Telegram bot specific
+backend/telegram-bot/node_modules/
+backend/telegram-bot/package-lock.json
+backend/telegram-bot/.env
+backend/telegram-bot/*.log
+
+# Frontend specific (if you ever add build files)
+frontend/node_modules/
+frontend/package-lock.json
+frontend/.env
+frontend/dist/
+frontend/build/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-*
+*.sublime-workspace
+*.sublime-project
+.project
+.classpath
+.settings/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+*.lcov
+.nyc_output/
+
+# Build outputs
+dist/
+build/
+*.tgz
+*.tsbuildinfo
+
+# Temp files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Cache
+.cache/
+.eslintcache
+.stylelintcache
+.node_modules/
+
+# Testing
+coverage/
+.nyc_output/
+.reports/
+
+# Optional: Prevent sensitive info
+**/secrets/
+**/keys/
+**/certs/
+*.pem
+*.key
+*.crt
+
+# Docker (if used)
+docker-compose.override.yml
+Dockerfile.dev
+*.pid
+
+# Render specific
+render.yaml
