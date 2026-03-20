@@ -12,21 +12,14 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ==================== START TELEGRAM BOT SAFELY ====================
-try {
-    require('./backend/telegram-bot/bot');
-    console.log('🤖 Bot started');
-} catch (err) {
-    console.log('⚠️ Bot not started:', err.message);
-}
-
 // ==================== MIDDLEWARE ====================
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
 // ==================== STATIC FILES ====================
-app.use(express.static(path.join(__dirname, 'frontend')));
+// Serve frontend files (one level up from backend folder)
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ==================== API ROUTES ====================
 
@@ -39,7 +32,6 @@ app.get('/health', (req, res) => {
 app.post('/api/send-message', async (req, res) => {
     try {
         const { message } = req.body;
-
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
         const chatId = process.env.ADMIN_CHAT_ID;
 
@@ -60,7 +52,6 @@ app.post('/api/send-message', async (req, res) => {
         );
 
         res.json({ success: true });
-
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ success: false });
@@ -79,7 +70,6 @@ app.get('/api/get-updates/:offset?', async (req, res) => {
         );
 
         res.json({ success: true, data: response.data });
-
     } catch (error) {
         res.status(500).json({ success: false });
     }
@@ -88,23 +78,24 @@ app.get('/api/get-updates/:offset?', async (req, res) => {
 // ==================== FRONTEND ROUTES ====================
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 app.get('/page2', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/page2.html'));
+    res.sendFile(path.join(__dirname, '../frontend/page2.html'));
 });
 
 app.get('/page3', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/page3.html'));
+    res.sendFile(path.join(__dirname, '../frontend/page3.html'));
 });
 
 app.get('/success', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend/success.html'));
+    res.sendFile(path.join(__dirname, '../frontend/success.html'));
 });
 
 // ==================== START SERVER ====================
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server running on port ${PORT}`);
+    console.log(`📁 Serving frontend from: ${path.join(__dirname, '../frontend')}`);
 });
