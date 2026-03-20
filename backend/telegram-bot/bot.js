@@ -1,17 +1,23 @@
-require('dotenv').config({ path: '../../.env' });
-const token = process.env.BOT_TOKEN;
 const TelegramBot = require('node-telegram-bot-api');
 const dotenv = require('dotenv');
 const axios = require('axios');
 
 dotenv.config();
 
-const token = process.env.BOT_TOKEN;
+// Use a unique variable name - check if there's no duplicate
+const botToken = process.env.BOT_TOKEN;  // Changed from 'token' to 'botToken'
 const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
 
-const bot = new TelegramBot(token, { polling: true });
+if (!botToken) {
+    console.error('❌ BOT_TOKEN not found in environment variables');
+    process.exit(1);
+}
+
+// Initialize bot with the token
+const bot = new TelegramBot(botToken, { polling: true });
 
 console.log('🤖 Bayport Loans Telegram Bot Started');
+console.log(`📡 Backend URL: ${backendUrl}`);
 
 // /start command
 bot.onText(/\/start/, (msg) => {
@@ -103,6 +109,11 @@ bot.on('callback_query', async (callbackQuery) => {
     );
     
     bot.answerCallbackQuery(callbackQuery.id);
+});
+
+// Error handling
+bot.on('polling_error', (error) => {
+    console.error('Polling error:', error);
 });
 
 console.log('✅ Bot is running and waiting for commands...');
